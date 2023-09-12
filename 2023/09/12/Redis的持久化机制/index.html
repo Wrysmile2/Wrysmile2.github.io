@@ -7,22 +7,24 @@
 <meta name="full-screen" content="yes">
 <meta name="theme-color" content="#317EFB" />
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
-<meta name="description" content="一级标题代码测试：  1print(&quot;Hello&quot;)   图片测试：   引用测试：  这是一条引用  二级标题无序列表测试：  哈哈   嘿嘿   吼吼  三级标题四级标题">
+<meta name="description" content="Redis的持久化机制引言我们都知道，Redis 的数据存储在内存中, 一旦服务器宕机，内存中的数据将全部丢失。因此，对 Redis 来说，实现数据的持久化，避免从后端数据库中进行恢复，是至关重要的。本篇我们详细讲解下 Redis 的三种持久化机制，分别是 AOF（Append Only File） 日志和 RDB 快照 以及 混合持久化。 AOF机制AOF 日志是写后日志，也就是 Redis 先">
 <meta property="og:type" content="article">
-<meta property="og:title" content="第一篇博客">
-<meta property="og:url" content="http://example.com/2023/09/10/%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/index.html">
+<meta property="og:title" content="Redis的持久化机制">
+<meta property="og:url" content="http://example.com/2023/09/12/Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="一级标题代码测试：  1print(&quot;Hello&quot;)   图片测试：   引用测试：  这是一条引用  二级标题无序列表测试：  哈哈   嘿嘿   吼吼  三级标题四级标题">
+<meta property="og:description" content="Redis的持久化机制引言我们都知道，Redis 的数据存储在内存中, 一旦服务器宕机，内存中的数据将全部丢失。因此，对 Redis 来说，实现数据的持久化，避免从后端数据库中进行恢复，是至关重要的。本篇我们详细讲解下 Redis 的三种持久化机制，分别是 AOF（Append Only File） 日志和 RDB 快照 以及 混合持久化。 AOF机制AOF 日志是写后日志，也就是 Redis 先">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/img/404.jpg">
-<meta property="article:published_time" content="2023-09-10T01:30:07.000Z">
-<meta property="article:modified_time" content="2023-09-10T14:05:23.798Z">
+<meta property="og:image" content="http://example.com/img/404.jpg">
+<meta property="article:published_time" content="2023-09-12T01:15:51.000Z">
+<meta property="article:modified_time" content="2023-09-12T06:34:59.708Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="redis">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/img/404.jpg">
 
 
-<title >第一篇博客</title>
+<title >Redis的持久化机制</title>
 
 <!-- Favicon -->
 
@@ -64,7 +66,7 @@
 
 <!-- Variable -->
 <script>window.ASYNC_CONFIG = {"hostname":"example.com","author":"John Doe","root":"/","typed_text":null,"theme_version":"2.0.9","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/favicon.svg","icon16":"/img/favicon.svg","icon32":"/img/favicon.svg","appleTouchIcon":null,"webmanifest":null,"visibilitychange":false,"hidden":"/failure.ico","showText":"(/≧▽≦/)Hey! Good again!","hideText":"(●—●)Oh, crash!"},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}.","hits":"${hits} results found","hits_time":"${hits} results found in ${time} ms","author":"Post author: ","copyright_link":"Post link: ","copyright_license_title":"Copyright Notice: ","copyright_license_content":"All articles in this blog are licensed under undefined unless otherwise stated.","copy_success":"Copied","copy_failure":"Copy failed","open_read_mode":"Enter reading mode","exit_read_mode":"Exit reading mode","notice_outdate_message":"It has been undefined days since the last update, the content of the article may be outdated.","just":"Just","min":"minutes ago","hour":"hours ago","day":"days ago","month":"months ago"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":true,"title":"default","height_limit":false}};</script>
-<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2023-09-10 22:05:23"};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2023-09-12 14:34:59"};</script>
 
 <!-- Theme mode css -->
 <link data-swup-theme rel="stylesheet" href="/css/index.css?v=2.0.9" id="trm-switch-style">
@@ -216,7 +218,7 @@
                             NEWS LETTER
                         </div>
                         <h1 class="trm-mb-30 trm-hsmb-font">
-                            第一篇博客
+                            Redis的持久化机制
                         </h1>
 
                         
@@ -312,13 +314,13 @@
     <div class="col-sm-4">
         <div class="trm-card trm-label trm-label-light text-center">
             <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
-            09/10
+            09/12
         </div>
     </div>
     <div class="col-sm-4">
         <div class="trm-card trm-label trm-label-light text-center">
             <i class="iconfont far fa-clock trm-icon"></i><br>
-            09:30
+            09:15
         </div>
     </div>
     <div class="col-sm-4">
@@ -330,23 +332,72 @@
 </div>
 <div class="trm-card ">
     <article id="article-container" class="trm-publication">
-    <h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><p>代码测试： </p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Hello&quot;</span>)</span><br></pre></td></tr></table></figure>
-
-<p> 图片测试： </p>
-<p><img src="http://mculover666.cn/blog/20191031/R4mWMXsrRKxu.png?imageslim" loading="lazy" onerror='this.onerror=null;this.src="/img/404.jpg"'> 引用测试：</p>
-<blockquote>
-<p>这是一条引用 </p>
-<h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><p>无序列表测试：</p>
-<ul>
-<li><p>哈哈 </p>
-</li>
-<li><p>嘿嘿 </p>
-</li>
-<li><p>吼吼 </p>
-<h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><h4 id="四级标题"><a href="#四级标题" class="headerlink" title="四级标题"></a>四级标题</h4></li>
+    <h1 id="Redis的持久化机制"><a href="#Redis的持久化机制" class="headerlink" title="Redis的持久化机制"></a>Redis的持久化机制</h1><h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>我们都知道，Redis 的数据存储在内存中, 一旦服务器宕机，内存中的数据将全部丢失。因此，对 Redis 来说，实现数据的持久化，避免从后端数据库中进行恢复，是至关重要的。本篇我们详细讲解下 Redis 的三种持久化机制，分别是 AOF（Append Only File） 日志和 RDB 快照 以及 混合持久化。</p>
+<h3 id="AOF机制"><a href="#AOF机制" class="headerlink" title="AOF机制"></a>AOF机制</h3><p>AOF 日志是写后日志，也就是 Redis 先执行命令，然后将数据写入内存，最后才记录日志，重启时通过执行 AOF 文件中的 Redis 命令来恢复数据。如下图所示：</p>
+<p><img src="https://developer.qcloudimg.com/http-save/yehe-10418638/693b4cb76c16876336e4c5a3a06fed27.png" loading="lazy" onerror='this.onerror=null;this.src="/img/404.jpg"'></p>
+<p>类似MySql bin-log 的原理，AOF 能够解决数据持久化实时性问题，是目前 Redis 持久化机制中主流的方案。</p>
+<h3 id="AOF持久化流程"><a href="#AOF持久化流程" class="headerlink" title="AOF持久化流程"></a>AOF持久化流程</h3><p>AOF 持久化方案进行备份时，客户端所有请求的写命令都会被追加到 AOF 缓冲区中，缓冲区中的数据会根据 Redis 配置文件中配置的同步策略来同步到磁盘上的 AOF 文件中，追加保存每次写的操作到文件末尾。当 AOF 的文件达到重写策略配置的阈值时，Redis 会对 AOF 日志文件进行重写，给 AOF 日志文件瘦身。Redis 服务重启的时候，通过加载 AOF 日志文件来恢复数据。如下图所示：</p>
+<p><img src="https://developer.qcloudimg.com/http-save/yehe-10418638/bc15aa10e9c9d41ef356faa07b60cb82.png" loading="lazy" onerror='this.onerror=null;this.src="/img/404.jpg"'></p>
+<h3 id="Redis-AOF-执行流程"><a href="#Redis-AOF-执行流程" class="headerlink" title="Redis AOF 执行流程"></a>Redis AOF 执行流程</h3><p>AOF 为了避免额外的检查开销，并不会检查命令的正确性，如果先记录日志再执行命令，就有可能记录错误的命令，再通过 AOF 日志恢复数据的时候，就有可能出错，而且在执行完命令后记录日志也不会阻塞当前的写操作。但是 AOF 是存在一定的风险的，首先是如果刚执行一个命令，但是 AOF 文件中还没来得及保存就宕机了，那么这个命令和数据就会有丢失的风险，另外 AOF 虽然可以避免对当前命令的阻塞（因为是先写入再记录日志），但有可能会对下一次操作带来阻塞风险（可能存在写入磁盘较慢的情况）。这两种情况都在于 AOF 什么时候写入磁盘，针对这个问题 AOF 机制提供了三种同步策略（appendfsync 参数）。</p>
+<h3 id="AOF-写入磁盘的同步策略"><a href="#AOF-写入磁盘的同步策略" class="headerlink" title="AOF 写入磁盘的同步策略"></a>AOF 写入磁盘的同步策略</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>同步策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Always</td>
+<td>同步写入磁盘，只要有写入就会调用fsync函数；</td>
+</tr>
+<tr>
+<td>Everysec</td>
+<td>每秒调用fsync函数一次，每个命令执行完，先把日志写入 AOF 文件的缓冲区，每隔一秒把缓冲区的内容写入磁盘</td>
+</tr>
+<tr>
+<td>No</td>
+<td>不调用fsync，让操作系统决定何时同步磁盘。每个命令执行完，先将日志写入 AOF 文件的缓冲区，由操作系统决定何时把缓冲区的内容写入磁盘</td>
+</tr>
+</tbody></table>
+<h3 id="三种同步策略的优缺点如下："><a href="#三种同步策略的优缺点如下：" class="headerlink" title="三种同步策略的优缺点如下："></a>三种同步策略的优缺点如下：</h3><ul>
+<li>Always：可靠性较高，数据基本不丢失，但是对性能影响较大</li>
+<li>Everysec：性能适中，及时宕机也只会丢失一秒的数据</li>
+<li>No：性能好，但发生当即情况时，</li>
 </ul>
+<h3 id="AOF重写"><a href="#AOF重写" class="headerlink" title="AOF重写"></a>AOF重写</h3><p>我们上面说过，AOF 属于日志追加的形式来存储 Redis 的写指令，虽然有一定的写回策略，但毕竟 AOF 是通过文件的形式记录所有的写命令，但如果指令越来越多的时候，AOF 文件就会越来越大，可能会超出文件大小的限制。如果发生宕机，需要把 AOF 所有的命令重新执行，以用于故障恢复，数据过大的话这个恢复过程越漫长，也会影响 Redis 的使用。因此 Redis 提供 <strong>重写机制</strong>来解决这个问题。</p>
+<p>AOF 重写的过程是通过主线程 fork 后台的 bgrewriteaof 子进程来实现的，可以避免阻塞主进导致性能下降，整个过程如下：</p>
+<ul>
+<li><p>AOF 每次重写，fork 过程会把主线程的内存拷贝一份 bgrewriteaof 子进程，里面包含了数据库的数据，拷贝的是父进程的页表，可以在不影响主进程的情况下逐一把拷贝的数据记入重写日志；</p>
+</li>
+<li><p>因为主线程没有阻塞，仍然可以处理新来的操作，如果这时候存在写操作，会先把操作先放入缓冲区，对于正在使用的日志，如果宕机了这个日志也是齐全的，可以用于恢复；对于正在更新的日志，也不会丢失新的操作，等到数据拷贝完成，就可以将缓冲区的数据写入到新的文件中，保证数据库的最新状态。</p>
+</li>
+</ul>
+<h3 id="RDB快照"><a href="#RDB快照" class="headerlink" title="RDB快照"></a>RDB快照</h3><p>RDB是一种快照存储持久化方式，具体就是将Redis某一时刻的内存数据保存到硬盘的文件当中，默认保存的文件名为dump.rdb，而在Redis服务器启动时，会重新加载dump.rdb文件的数据到内存当中恢复数据。</p>
+<p>为了 RDB 数据恢复的可靠性，在进行快照的时候是全量快照，会将内存中所有的数据都记录到磁盘中，这就有可能会阻塞主线程的执行。Redis 提供了两个命令来生成 RDB 文件，分别是 <strong>save</strong> 和 <strong>bgsave</strong> ：</p>
+<ul>
+<li><strong>save</strong>：执行 save 指令，阻塞 Redis 的其他操作，会导致 Redis 无法响应客户端请求，不建议使用。</li>
+<li><strong>bgsave</strong>：执行 bgsave 指令，Redis 后台创建子进程，异步进行快照的保存操作，此时 Redis 仍然能响应客户端的请求。</li>
+</ul>
+<h3 id="自动间隔保存"><a href="#自动间隔保存" class="headerlink" title="自动间隔保存"></a>自动间隔保存</h3><p>Redis 可以设置间隔性保存，让它在“ N 秒内数据集至少有 M 个改动”这一条件被满足时，自动保存一次数据集。比如说， 以下设置会让 Redis 在满足“ 60 秒内有至少有 10 个键被改动”这一条件时，自动保存一次数据集：save 60 10</p>
+<p>Redis 的默认配置如下，三个设置满足其一就会触发自动保存：</p>
+<blockquote>
+<p>save  60  10000</p>
+<p>save  900  10</p>
+<p>save  300  1</p>
 </blockquote>
+<h3 id="RDB模式优点"><a href="#RDB模式优点" class="headerlink" title="RDB模式优点"></a>RDB模式优点</h3><ul>
+<li>相比AOF在恢复数据的时候需要一条条的执行操作命令，通过RDB文件恢复数据的效率更高；</li>
+<li>同样规模的内存数据，RDB文件数据更加紧凑，磁盘空间占用更小；</li>
+<li>适合全量备份内存数据场景；</li>
+<li>可以根据不同的时间间隔保存RDB文件，在恢复数据的时候可以更加灵活地选择对应版本数据进行恢复</li>
+</ul>
+<h3 id="RDB模式缺点"><a href="#RDB模式缺点" class="headerlink" title="RDB模式缺点"></a>RDB模式缺点</h3><ul>
+<li>由于RDB数据保存存在一定的时间间隔，因此存在丢失缓存数据的风险；</li>
+<li>fork子进程进行RDB文件生成，由于是一次性生成一个内存快照文件，对于服务器磁盘IO以及Redis本身来说都属于重操作，可能会对服务器的磁盘IO造成压力。</li>
+</ul>
+<h3 id="混合使用AOF日志和RDB快照"><a href="#混合使用AOF日志和RDB快照" class="headerlink" title="混合使用AOF日志和RDB快照"></a>混合使用AOF日志和RDB快照</h3><p>Redis4.0 后大部分的使用场景都不会单独使用 RDB 或者 AOF 来做持久化机制，而是兼顾二者的优势混合使用。其原因是 RDB 虽然快，但是会丢失比较多的数据，不能保证数据完整性；AOF 虽然能尽可能保证数据完整性，但是性能确实是一个诟病，比如重放恢复数据。  </p>
+<p>Redis从4.0版本开始引入 RDB-AOF 混合持久化模式，这种模式是基于 AOF 持久化模式构建而来的，混合持久化通过 <strong>aof-use-rdb-preamble yes</strong> 开启。这样的好处是 RDB 快照不需要很频繁的执行，可以避免频繁 fork 对主线程的影响，而且 AOF 日志也只记录两次快照期间的操作，不用记录所有操作，也不会出现文件过大的情况，避免了重写开销。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本文主要分析了Redis AOF、RDB快照 以及混合持久化的内存数据持久化的机制原理，生产环境中推荐使用混合持久化，这种方式综合了RDB和AOF两种方式的优点。</p>
 
 </article>
     
@@ -362,9 +413,10 @@
         </h5>
     </div>
     
+    
         <div class="col-lg-6">
     <div class="trm-blog-card trm-scroll-animation" data-scroll data-scroll-offset="40">
-        <a href="/2023/09/12/Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/" class="trm-cover-frame trm-anima-link">
+        <a href="/2023/09/10/%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/" class="trm-cover-frame trm-anima-link">
             
             
                 <img alt="cover" class="no-fancybox" src="/img/block.jpg">
@@ -378,46 +430,14 @@
                 </a>
             </div>
             <h5>
-                <a href="/2023/09/12/Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/" class="trm-anima-link">
-                    Redis的持久化机制
+                <a href="/2023/09/10/%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/" class="trm-anima-link">
+                    第一篇博客
                 </a>
             </h5>
             <div class="trm-divider trm-mb-20 trm-mt-20"></div>
             <ul class="trm-card-data trm-label">
-                <li>23/09/12</li>
-                <li>09:15</li>
-                
-                
-            </ul>
-        </div>
-    </div>
-</div>
-    
-    
-        <div class="col-lg-6">
-    <div class="trm-blog-card trm-scroll-animation" data-scroll data-scroll-offset="40">
-        <a href="/2023/09/05/hello-world/" class="trm-cover-frame trm-anima-link">
-            
-            
-                <img alt="cover" class="no-fancybox" src="/img/block.jpg">
-            
-        </a>
-        
-        <div class="trm-card-descr">
-            <div class="trm-label trm-category trm-mb-20">
-                <a href=" #.">
-                    Unclassified
-                </a>
-            </div>
-            <h5>
-                <a href="/2023/09/05/hello-world/" class="trm-anima-link">
-                    Hello World
-                </a>
-            </h5>
-            <div class="trm-divider trm-mb-20 trm-mt-20"></div>
-            <ul class="trm-card-data trm-label">
-                <li>23/09/05</li>
-                <li>16:19</li>
+                <li>23/09/10</li>
+                <li>09:30</li>
                 
                 
             </ul>
