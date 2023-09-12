@@ -1,7 +1,7 @@
 ---
 title: Redis的持久化机制
 date: 2023-09-12 09:15:51
-tags:redis 
+tags: redis 
 ---
 
 # Redis的持久化机制
