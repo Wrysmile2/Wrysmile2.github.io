@@ -1,7 +1,10 @@
 ---
 title: redis的崩溃问题
 date: 2023-09-15 08:58:11
-tags: redis
+categories: 
+- redis
+tags: 
+- redis的崩溃问题
 ---
 
 # Redis的崩溃问题

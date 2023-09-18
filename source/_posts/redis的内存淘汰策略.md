@@ -1,7 +1,10 @@
 ---
 title: redis的内存淘汰策略
 date: 2023-09-14 12:58:45
-tags: redis 
+categories: 
+- redis
+tags: 
+- 内存淘汰策略 
 ---
 
 # Redis的内存淘汰策略
