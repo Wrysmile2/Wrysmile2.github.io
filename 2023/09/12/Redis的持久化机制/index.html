@@ -1,32 +1,232 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Redis的持久化机制 | 伟伟超人</title><meta name="author" content="John Doe"><meta name="copyright" content="John Doe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Redis的持久化机制引言我们都知道，Redis 的数据存储在内存中, 一旦服务器宕机，内存中的数据将全部丢失。因此，对 Redis 来说，实现数据的持久化，避免从后端数据库中进行恢复，是至关重要的。本篇我们详细讲解下 Redis 的三种持久化机制，分别是 AOF（Append Only File） 日志和 RDB 快照 以及 混合持久化。 AOF机制AOF 日志是写后日志，也就是 Redis 先">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis的持久化机制">
+<meta property="og:url" content="http://example.com/2023/09/12/Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="伟伟超人">
+<meta property="og:description" content="Redis的持久化机制引言我们都知道，Redis 的数据存储在内存中, 一旦服务器宕机，内存中的数据将全部丢失。因此，对 Redis 来说，实现数据的持久化，避免从后端数据库中进行恢复，是至关重要的。本篇我们详细讲解下 Redis 的三种持久化机制，分别是 AOF（Append Only File） 日志和 RDB 快照 以及 混合持久化。 AOF机制AOF 日志是写后日志，也就是 Redis 先">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-09-12T01:15:51.000Z">
+<meta property="article:modified_time" content="2023-09-18T12:42:25.804Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="redis的持久化">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/09/12/Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Redis的持久化机制',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-09-18 20:42:25'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
-block content
-  #post
-    if top_img === false
-      include includes/header/post-info.pug
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
 
-    article#article-container.post-content!=page.content
-    include includes/post/post-copyright.pug
-    .tag_share
-      if (theme.post_meta.post.tags)
-        .post-meta__tag-list
-          each item, index in page.tags.data
-            a(href=url_for(item.path)).post-meta__tags #[=item.name]
-      include includes/third-party/share/index.pug
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
         
-    if theme.reward.enable && theme.reward.QR_code
-      !=partial('includes/post/reward', {}, {cache: true})
-
-    //- ad
-    if theme.ad && theme.ad.post
-      .ads-wrap!=theme.ad.post
-
-    if theme.post_pagination
-      include includes/pagination.pug
-    if theme.related_post && theme.related_post.enable
-      != related_posts(page,site.posts)
-
-    if page.comments !== false && theme.comments && theme.comments.use
-      - var commentsJsLoad = true
-      !=partial('includes/third-party/comments/index', {}, {cache: true})
-      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="伟伟超人" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">1</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="伟伟超人"><span class="site-name">伟伟超人</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Redis的持久化机制</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-09-12T01:15:51.000Z" title="Created 2023-09-12 09:15:51">2023-09-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-09-18T12:42:25.804Z" title="Updated 2023-09-18 20:42:25">2023-09-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/redis/">redis</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Redis的持久化机制"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Redis的持久化机制"><a href="#Redis的持久化机制" class="headerlink" title="Redis的持久化机制"></a>Redis的持久化机制</h1><h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>我们都知道，Redis 的数据存储在内存中, 一旦服务器宕机，内存中的数据将全部丢失。因此，对 Redis 来说，实现数据的持久化，避免从后端数据库中进行恢复，是至关重要的。本篇我们详细讲解下 Redis 的三种持久化机制，分别是 AOF（Append Only File） 日志和 RDB 快照 以及 混合持久化。</p>
+<h3 id="AOF机制"><a href="#AOF机制" class="headerlink" title="AOF机制"></a>AOF机制</h3><p>AOF 日志是写后日志，也就是 Redis 先执行命令，然后将数据写入内存，最后才记录日志，重启时通过执行 AOF 文件中的 Redis 命令来恢复数据。如下图所示：</p>
+<p><img src="https://developer.qcloudimg.com/http-save/yehe-10418638/693b4cb76c16876336e4c5a3a06fed27.png"></p>
+<p>类似MySql bin-log 的原理，AOF 能够解决数据持久化实时性问题，是目前 Redis 持久化机制中主流的方案。</p>
+<h3 id="AOF持久化流程"><a href="#AOF持久化流程" class="headerlink" title="AOF持久化流程"></a>AOF持久化流程</h3><p>AOF 持久化方案进行备份时，客户端所有请求的写命令都会被追加到 AOF 缓冲区中，缓冲区中的数据会根据 Redis 配置文件中配置的同步策略来同步到磁盘上的 AOF 文件中，追加保存每次写的操作到文件末尾。当 AOF 的文件达到重写策略配置的阈值时，Redis 会对 AOF 日志文件进行重写，给 AOF 日志文件瘦身。Redis 服务重启的时候，通过加载 AOF 日志文件来恢复数据。如下图所示：</p>
+<p><img src="https://developer.qcloudimg.com/http-save/yehe-10418638/bc15aa10e9c9d41ef356faa07b60cb82.png"></p>
+<h3 id="Redis-AOF-执行流程"><a href="#Redis-AOF-执行流程" class="headerlink" title="Redis AOF 执行流程"></a>Redis AOF 执行流程</h3><p>AOF 为了避免额外的检查开销，并不会检查命令的正确性，如果先记录日志再执行命令，就有可能记录错误的命令，再通过 AOF 日志恢复数据的时候，就有可能出错，而且在执行完命令后记录日志也不会阻塞当前的写操作。但是 AOF 是存在一定的风险的，首先是如果刚执行一个命令，但是 AOF 文件中还没来得及保存就宕机了，那么这个命令和数据就会有丢失的风险，另外 AOF 虽然可以避免对当前命令的阻塞（因为是先写入再记录日志），但有可能会对下一次操作带来阻塞风险（可能存在写入磁盘较慢的情况）。这两种情况都在于 AOF 什么时候写入磁盘，针对这个问题 AOF 机制提供了三种同步策略（appendfsync 参数）。</p>
+<h3 id="AOF-写入磁盘的同步策略"><a href="#AOF-写入磁盘的同步策略" class="headerlink" title="AOF 写入磁盘的同步策略"></a>AOF 写入磁盘的同步策略</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>同步策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Always</td>
+<td>同步写入磁盘，只要有写入就会调用fsync函数；</td>
+</tr>
+<tr>
+<td>Everysec</td>
+<td>每秒调用fsync函数一次，每个命令执行完，先把日志写入 AOF 文件的缓冲区，每隔一秒把缓冲区的内容写入磁盘</td>
+</tr>
+<tr>
+<td>No</td>
+<td>不调用fsync，让操作系统决定何时同步磁盘。每个命令执行完，先将日志写入 AOF 文件的缓冲区，由操作系统决定何时把缓冲区的内容写入磁盘</td>
+</tr>
+</tbody></table>
+<h3 id="三种同步策略的优缺点如下："><a href="#三种同步策略的优缺点如下：" class="headerlink" title="三种同步策略的优缺点如下："></a>三种同步策略的优缺点如下：</h3><ul>
+<li>Always：可靠性较高，数据基本不丢失，但是对性能影响较大</li>
+<li>Everysec：性能适中，及时宕机也只会丢失一秒的数据</li>
+<li>No：性能好，但发生当即情况时，</li>
+</ul>
+<h3 id="AOF重写"><a href="#AOF重写" class="headerlink" title="AOF重写"></a>AOF重写</h3><p>我们上面说过，AOF 属于日志追加的形式来存储 Redis 的写指令，虽然有一定的写回策略，但毕竟 AOF 是通过文件的形式记录所有的写命令，但如果指令越来越多的时候，AOF 文件就会越来越大，可能会超出文件大小的限制。如果发生宕机，需要把 AOF 所有的命令重新执行，以用于故障恢复，数据过大的话这个恢复过程越漫长，也会影响 Redis 的使用。因此 Redis 提供 <strong>重写机制</strong>来解决这个问题。</p>
+<p>AOF 重写的过程是通过主线程 fork 后台的 bgrewriteaof 子进程来实现的，可以避免阻塞主进导致性能下降，整个过程如下：</p>
+<ul>
+<li><p>AOF 每次重写，fork 过程会把主线程的内存拷贝一份 bgrewriteaof 子进程，里面包含了数据库的数据，拷贝的是父进程的页表，可以在不影响主进程的情况下逐一把拷贝的数据记入重写日志；</p>
+</li>
+<li><p>因为主线程没有阻塞，仍然可以处理新来的操作，如果这时候存在写操作，会先把操作先放入缓冲区，对于正在使用的日志，如果宕机了这个日志也是齐全的，可以用于恢复；对于正在更新的日志，也不会丢失新的操作，等到数据拷贝完成，就可以将缓冲区的数据写入到新的文件中，保证数据库的最新状态。</p>
+</li>
+</ul>
+<h3 id="RDB快照"><a href="#RDB快照" class="headerlink" title="RDB快照"></a>RDB快照</h3><p>RDB是一种快照存储持久化方式，具体就是将Redis某一时刻的内存数据保存到硬盘的文件当中，默认保存的文件名为dump.rdb，而在Redis服务器启动时，会重新加载dump.rdb文件的数据到内存当中恢复数据。</p>
+<p>为了 RDB 数据恢复的可靠性，在进行快照的时候是全量快照，会将内存中所有的数据都记录到磁盘中，这就有可能会阻塞主线程的执行。Redis 提供了两个命令来生成 RDB 文件，分别是 <strong>save</strong> 和 <strong>bgsave</strong> ：</p>
+<ul>
+<li><strong>save</strong>：执行 save 指令，阻塞 Redis 的其他操作，会导致 Redis 无法响应客户端请求，不建议使用。</li>
+<li><strong>bgsave</strong>：执行 bgsave 指令，Redis 后台创建子进程，异步进行快照的保存操作，此时 Redis 仍然能响应客户端的请求。</li>
+</ul>
+<h3 id="自动间隔保存"><a href="#自动间隔保存" class="headerlink" title="自动间隔保存"></a>自动间隔保存</h3><p>Redis 可以设置间隔性保存，让它在“ N 秒内数据集至少有 M 个改动”这一条件被满足时，自动保存一次数据集。比如说， 以下设置会让 Redis 在满足“ 60 秒内有至少有 10 个键被改动”这一条件时，自动保存一次数据集：save 60 10</p>
+<p>Redis 的默认配置如下，三个设置满足其一就会触发自动保存：</p>
+<blockquote>
+<p>save  60  10000</p>
+<p>save  900  10</p>
+<p>save  300  1</p>
+</blockquote>
+<h3 id="RDB模式优点"><a href="#RDB模式优点" class="headerlink" title="RDB模式优点"></a>RDB模式优点</h3><ul>
+<li>相比AOF在恢复数据的时候需要一条条的执行操作命令，通过RDB文件恢复数据的效率更高；</li>
+<li>同样规模的内存数据，RDB文件数据更加紧凑，磁盘空间占用更小；</li>
+<li>适合全量备份内存数据场景；</li>
+<li>可以根据不同的时间间隔保存RDB文件，在恢复数据的时候可以更加灵活地选择对应版本数据进行恢复</li>
+</ul>
+<h3 id="RDB模式缺点"><a href="#RDB模式缺点" class="headerlink" title="RDB模式缺点"></a>RDB模式缺点</h3><ul>
+<li>由于RDB数据保存存在一定的时间间隔，因此存在丢失缓存数据的风险；</li>
+<li>fork子进程进行RDB文件生成，由于是一次性生成一个内存快照文件，对于服务器磁盘IO以及Redis本身来说都属于重操作，可能会对服务器的磁盘IO造成压力。</li>
+</ul>
+<h3 id="混合使用AOF日志和RDB快照"><a href="#混合使用AOF日志和RDB快照" class="headerlink" title="混合使用AOF日志和RDB快照"></a>混合使用AOF日志和RDB快照</h3><p>Redis4.0 后大部分的使用场景都不会单独使用 RDB 或者 AOF 来做持久化机制，而是兼顾二者的优势混合使用。其原因是 RDB 虽然快，但是会丢失比较多的数据，不能保证数据完整性；AOF 虽然能尽可能保证数据完整性，但是性能确实是一个诟病，比如重放恢复数据。  </p>
+<p>Redis从4.0版本开始引入 RDB-AOF 混合持久化模式，这种模式是基于 AOF 持久化模式构建而来的，混合持久化通过 <strong>aof-use-rdb-preamble yes</strong> 开启。这样的好处是 RDB 快照不需要很频繁的执行，可以避免频繁 fork 对主线程的影响，而且 AOF 日志也只记录两次快照期间的操作，不用记录所有操作，也不会出现文件过大的情况，避免了重写开销。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本文主要分析了Redis AOF、RDB快照 以及混合持久化的内存数据持久化的机制原理，生产环境中推荐使用混合持久化，这种方式综合了RDB和AOF两种方式的优点。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="http://example.com">John Doe</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2023/09/12/Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/">http://example.com/2023/09/12/Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96/">redis的持久化</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/09/14/redis%E7%9A%84%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/" title="redis的内存淘汰策略"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">redis的内存淘汰策略</div></div></a></div><div class="next-post pull-right"><a href="/2023/09/10/%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/" title="第一篇博客"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">第一篇博客</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">John Doe</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6"><span class="toc-number">1.</span> <span class="toc-text">Redis的持久化机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-number">1.0.1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOF%E6%9C%BA%E5%88%B6"><span class="toc-number">1.0.2.</span> <span class="toc-text">AOF机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOF%E6%8C%81%E4%B9%85%E5%8C%96%E6%B5%81%E7%A8%8B"><span class="toc-number">1.0.3.</span> <span class="toc-text">AOF持久化流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-AOF-%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.0.4.</span> <span class="toc-text">Redis AOF 执行流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOF-%E5%86%99%E5%85%A5%E7%A3%81%E7%9B%98%E7%9A%84%E5%90%8C%E6%AD%A5%E7%AD%96%E7%95%A5"><span class="toc-number">1.0.5.</span> <span class="toc-text">AOF 写入磁盘的同步策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E5%90%8C%E6%AD%A5%E7%AD%96%E7%95%A5%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="toc-number">1.0.6.</span> <span class="toc-text">三种同步策略的优缺点如下：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOF%E9%87%8D%E5%86%99"><span class="toc-number">1.0.7.</span> <span class="toc-text">AOF重写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB%E5%BF%AB%E7%85%A7"><span class="toc-number">1.0.8.</span> <span class="toc-text">RDB快照</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E9%97%B4%E9%9A%94%E4%BF%9D%E5%AD%98"><span class="toc-number">1.0.9.</span> <span class="toc-text">自动间隔保存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB%E6%A8%A1%E5%BC%8F%E4%BC%98%E7%82%B9"><span class="toc-number">1.0.10.</span> <span class="toc-text">RDB模式优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB%E6%A8%A1%E5%BC%8F%E7%BC%BA%E7%82%B9"><span class="toc-number">1.0.11.</span> <span class="toc-text">RDB模式缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E4%BD%BF%E7%94%A8AOF%E6%97%A5%E5%BF%97%E5%92%8CRDB%E5%BF%AB%E7%85%A7"><span class="toc-number">1.0.12.</span> <span class="toc-text">混合使用AOF日志和RDB快照</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.0.13.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/15/redis%E7%9A%84%E5%B4%A9%E6%BA%83%E9%97%AE%E9%A2%98/" title="redis的崩溃问题">redis的崩溃问题</a><time datetime="2023-09-15T00:58:11.000Z" title="Created 2023-09-15 08:58:11">2023-09-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/14/redis%E7%9A%84%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/" title="redis的内存淘汰策略">redis的内存淘汰策略</a><time datetime="2023-09-14T04:58:45.000Z" title="Created 2023-09-14 12:58:45">2023-09-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/12/Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/" title="Redis的持久化机制">Redis的持久化机制</a><time datetime="2023-09-12T01:15:51.000Z" title="Created 2023-09-12 09:15:51">2023-09-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/10/%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/" title="第一篇博客">第一篇博客</a><time datetime="2023-09-10T01:30:07.000Z" title="Created 2023-09-10 09:30:07">2023-09-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/05/hello-world/" title="Hello World">Hello World</a><time datetime="2023-09-05T08:19:42.618Z" title="Created 2023-09-05 16:19:42">2023-09-05</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By John Doe</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
