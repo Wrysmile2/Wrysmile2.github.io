@@ -9,6 +9,21 @@ nav:
 
 # Menu 目錄
 menu:
+  主页: / || fas fa-home
+  博文 || fa fa-graduation-cap:
+    分类: /categories/ || fa fa-archive
+    标签: /tags/ || fa fa-tags
+    归档: /archives/ || fa fa-folder-open
+  生活 || fas fa-list:
+    分享: /shuoshuo/ || fa fa-comments-o
+    相册: /photos/ || fa fa-camera-retro
+    音乐: /music/ || fa fa-music
+    影视: /movies/ || fas fa-video
+  友链: /links/ || fa fa-link
+  留言板: /comment/ || fa fa-paper-plane
+  #留言板: /messageboard/ || fa fa-paper-plane
+  关于笔者: /about/ || fas fa-heart  
+
   # Home: / || fas fa-home
   # Archives: /archives/ || fas fa-archive
   # Tags: /tags/ || fas fa-tags
