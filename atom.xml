@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>伟伟超人</title>
+  <title>伟伟超人`Blog</title>
   
   
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-09-18T12:40:37.371Z</updated>
+  <updated>2023-09-23T13:07:11.165Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -18,10 +18,10 @@
   
   <entry>
     <title>redis的崩溃问题</title>
-    <link href="http://example.com/2023/09/15/redis%E7%9A%84%E5%B4%A9%E6%BA%83%E9%97%AE%E9%A2%98/"/>
-    <id>http://example.com/2023/09/15/redis%E7%9A%84%E5%B4%A9%E6%BA%83%E9%97%AE%E9%A2%98/</id>
+    <link href="http://example.com/posts/711efdca.html"/>
+    <id>http://example.com/posts/711efdca.html</id>
     <published>2023-09-15T00:58:11.000Z</published>
-    <updated>2023-09-18T12:40:37.371Z</updated>
+    <updated>2023-09-23T13:07:11.165Z</updated>
     
     <content type="html"><![CDATA[<h1 id="Redis的崩溃问题"><a href="#Redis的崩溃问题" class="headerlink" title="Redis的崩溃问题"></a>Redis的崩溃问题</h1><h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>redis在我们日常的开发中通常作为缓存来分担数据库的压力，但是redis本身的并发能力也是有限度的，当访问量过大时，就会造成一系列的问题，常见问题有缓存穿透、缓存击穿、缓存雪崩，下面我们就来介绍这几种常见问题，并给出相应的解决办法。</p><h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><p>缓存穿透是指当有数据访问时，在redis中访问不存在且在数据库中访问也不存在，导致每次访问都直接访问数据库，从而返回空值。</p><h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h4><ol><li><p>布隆过滤器</p><p>将所有可能存在的数据哈希到一个足够大的 bitmap 中，一个一定不存在的数据会被这个 bitmap 拦截掉，从而避免了对底层存储系统的查询压力。</p></li><li><p>返回空对象</p><p>如果一个查询返回的数据为空，我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。缓存空对象带来的问题：</p><ul><li>空值做了缓存，那么缓存中便存了更多的键，需要更多的内存空间，比较有效的方法是针对这类数据设置一个较短的过期时间，让其自动剔除。</li><li>缓存和存储的数据会有一段时间窗口的不一致，可能会对业务有一定影响。可以利用消息系统或者其他方式清除掉缓存层中的空对象。</li></ul></li></ol><h3 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h3><p>缓存击穿是指有一个热点key，加大并发对这种key的访问，当这种key失效的时候，巨大的并发就会直面冲击数据库，讲数据库冲垮，导致数据库宕机。</p><h4 id="解决办法-1"><a href="#解决办法-1" class="headerlink" title="解决办法"></a>解决办法</h4><ol><li><p>互斥锁</p><p>缓存失效时，不是立即去加载db数据，而是先使用某些带成功返回的原子操作命令，如(Redis的setnx）去操作，成功的时候，再去加载db数据库数据和设置缓存。否则就去重试获取缓存。</p></li><li><p>“永远不过期”</p><ul><li>从redis上看，确实没有设置过期时间，这就保证了，不会出现热点key过期问题，也就是“物理”不过期。</li><li>从功能上看，如果不过期，那不就成静态的了吗？所以我们把过期时间存在key对应的value里，如果发现要过期了，通过一个后台的异步线程进行缓存的构建，也就是“逻辑”过期。</li></ul></li></ol><h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p>缓存雪崩是指缓存中存在大量的经常访问的key，当这些key在同一时间失效时，巨大的访问量就会直接落在数据库上，是数据库崩溃。</p><h4 id="解决办法-2"><a href="#解决办法-2" class="headerlink" title="解决办法"></a>解决办法</h4><ol><li><p>均匀过期</p><p>在缓存的时候给过期时间加上一个随机值，这样就会大幅度的减少缓存在同一时间过期。</p></li><li><p>双层缓存策略、二级缓存</p><p>Cache1 为原始缓存，Cache2 为拷贝缓存，Cache1 失效时，可以访问 Cache2，Cache1 缓存失效时间设置为短期，Cache2 设置为长期。</p></li><li><p>加互斥锁</p><p>在缓存失效后，通过加锁或者队列来控制读数据库写缓存的线程数量。比如对某个 key 只允许一个线程查询数据和写缓存，其他线程等待；</p></li></ol>]]></content>
     
@@ -33,19 +33,19 @@
     
     
     
-    <category term="redis" scheme="http://example.com/categories/redis/"/>
+    <category term="中间件" scheme="http://example.com/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
     
     
-    <category term="redis的崩溃问题" scheme="http://example.com/tags/redis%E7%9A%84%E5%B4%A9%E6%BA%83%E9%97%AE%E9%A2%98/"/>
+    <category term="redis" scheme="http://example.com/tags/redis/"/>
     
   </entry>
   
   <entry>
     <title>redis的内存淘汰策略</title>
-    <link href="http://example.com/2023/09/14/redis%E7%9A%84%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/"/>
-    <id>http://example.com/2023/09/14/redis%E7%9A%84%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/</id>
+    <link href="http://example.com/posts/153f114c.html"/>
+    <id>http://example.com/posts/153f114c.html</id>
     <published>2023-09-14T04:58:45.000Z</published>
-    <updated>2023-09-18T12:43:07.888Z</updated>
+    <updated>2023-09-23T13:07:40.598Z</updated>
     
     <content type="html"><![CDATA[<h1 id="Redis的内存淘汰策略"><a href="#Redis的内存淘汰策略" class="headerlink" title="Redis的内存淘汰策略"></a>Redis的内存淘汰策略</h1><h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>Redis是一个基于内存的高性能非关系型数据库，主要的特点是高可用，速度快，分布式；在通常的开发中用作缓存来分担数据库的压力。一般情况下，当内存超出物理内存限制时，内存数据将与磁盘产生频繁交换(swap)，swap会导致redis性能急剧下降，对于访问量较大的情况下，swap的存取效率会让服务基本处于不可用的状态。  </p><p>在生产环境中，一般不允许redis出现swap行为，redis提供了 maxmemory 设置其最多可占用的内存空间。  </p><p>当redis使用的内存超出maxmemory时，此时已经没有多余可用的内存空间，新的数据将无法写入，redis提供了几种数据淘汰策略，用于清理数据，腾出空间以继续提供服务。</p><h3 id="淘汰策略"><a href="#淘汰策略" class="headerlink" title="淘汰策略"></a>淘汰策略</h3><ol><li><p>noeviction</p><p>可读不可写，即不会继续服务写请求，读请求可以继续进行。该策略不会是数据丢失，但由于生产的写请求不可用也同样无法让业务在进行下去，这种策略是默认的。</p></li><li><p>volatile-lru</p><p>淘汰具有过期时间的key，最少使用的key优先淘汰，没有过期时间的key不会被淘汰，该策略可以保证持久化的数据不被丢失。</p></li><li><p>volatile-ttl</p><p>与volatile-lru类似，二者区别是比较过期时间ttl的值，值越小的数据优先淘汰</p></li><li><p>volatile-random</p><p>与2、3类似，区别是随机淘汰有过期时间的key，但不考虑使用频率和过期时间的长短</p></li><li><p>allkeys-lru</p><p>与2类似，区别是该淘汰策略是淘汰redis中所有的key，不区分过期时间，但是区分使用频率。</p></li><li><p>与 5 类似，范围是所有的key，但是不区分使用频率。</p></li></ol><p>volatile开头的只会淘汰带有过期时间的key，allkeys则是所有的key，如果redis只是作为缓存使用，可以使用allkeys，如果有些数据是务必持久化的，则使用volatile。</p>]]></content>
     
@@ -57,19 +57,19 @@
     
     
     
-    <category term="redis" scheme="http://example.com/categories/redis/"/>
+    <category term="中间件" scheme="http://example.com/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
     
     
-    <category term="内存淘汰策略" scheme="http://example.com/tags/%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/"/>
+    <category term="redis" scheme="http://example.com/tags/redis/"/>
     
   </entry>
   
   <entry>
     <title>Redis的持久化机制</title>
-    <link href="http://example.com/2023/09/12/Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/"/>
-    <id>http://example.com/2023/09/12/Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/</id>
+    <link href="http://example.com/posts/e5adb42e.html"/>
+    <id>http://example.com/posts/e5adb42e.html</id>
     <published>2023-09-12T01:15:51.000Z</published>
-    <updated>2023-09-18T12:42:25.804Z</updated>
+    <updated>2023-09-23T13:07:27.538Z</updated>
     
     <content type="html"><![CDATA[<h1 id="Redis的持久化机制"><a href="#Redis的持久化机制" class="headerlink" title="Redis的持久化机制"></a>Redis的持久化机制</h1><h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>我们都知道，Redis 的数据存储在内存中, 一旦服务器宕机，内存中的数据将全部丢失。因此，对 Redis 来说，实现数据的持久化，避免从后端数据库中进行恢复，是至关重要的。本篇我们详细讲解下 Redis 的三种持久化机制，分别是 AOF（Append Only File） 日志和 RDB 快照 以及 混合持久化。</p><h3 id="AOF机制"><a href="#AOF机制" class="headerlink" title="AOF机制"></a>AOF机制</h3><p>AOF 日志是写后日志，也就是 Redis 先执行命令，然后将数据写入内存，最后才记录日志，重启时通过执行 AOF 文件中的 Redis 命令来恢复数据。如下图所示：</p><p><img src="https://developer.qcloudimg.com/http-save/yehe-10418638/693b4cb76c16876336e4c5a3a06fed27.png"></p><p>类似MySql bin-log 的原理，AOF 能够解决数据持久化实时性问题，是目前 Redis 持久化机制中主流的方案。</p><h3 id="AOF持久化流程"><a href="#AOF持久化流程" class="headerlink" title="AOF持久化流程"></a>AOF持久化流程</h3><p>AOF 持久化方案进行备份时，客户端所有请求的写命令都会被追加到 AOF 缓冲区中，缓冲区中的数据会根据 Redis 配置文件中配置的同步策略来同步到磁盘上的 AOF 文件中，追加保存每次写的操作到文件末尾。当 AOF 的文件达到重写策略配置的阈值时，Redis 会对 AOF 日志文件进行重写，给 AOF 日志文件瘦身。Redis 服务重启的时候，通过加载 AOF 日志文件来恢复数据。如下图所示：</p><p><img src="https://developer.qcloudimg.com/http-save/yehe-10418638/bc15aa10e9c9d41ef356faa07b60cb82.png"></p><h3 id="Redis-AOF-执行流程"><a href="#Redis-AOF-执行流程" class="headerlink" title="Redis AOF 执行流程"></a>Redis AOF 执行流程</h3><p>AOF 为了避免额外的检查开销，并不会检查命令的正确性，如果先记录日志再执行命令，就有可能记录错误的命令，再通过 AOF 日志恢复数据的时候，就有可能出错，而且在执行完命令后记录日志也不会阻塞当前的写操作。但是 AOF 是存在一定的风险的，首先是如果刚执行一个命令，但是 AOF 文件中还没来得及保存就宕机了，那么这个命令和数据就会有丢失的风险，另外 AOF 虽然可以避免对当前命令的阻塞（因为是先写入再记录日志），但有可能会对下一次操作带来阻塞风险（可能存在写入磁盘较慢的情况）。这两种情况都在于 AOF 什么时候写入磁盘，针对这个问题 AOF 机制提供了三种同步策略（appendfsync 参数）。</p><h3 id="AOF-写入磁盘的同步策略"><a href="#AOF-写入磁盘的同步策略" class="headerlink" title="AOF 写入磁盘的同步策略"></a>AOF 写入磁盘的同步策略</h3><table><thead><tr><th>参数</th><th>同步策略</th></tr></thead><tbody><tr><td>Always</td><td>同步写入磁盘，只要有写入就会调用fsync函数；</td></tr><tr><td>Everysec</td><td>每秒调用fsync函数一次，每个命令执行完，先把日志写入 AOF 文件的缓冲区，每隔一秒把缓冲区的内容写入磁盘</td></tr><tr><td>No</td><td>不调用fsync，让操作系统决定何时同步磁盘。每个命令执行完，先将日志写入 AOF 文件的缓冲区，由操作系统决定何时把缓冲区的内容写入磁盘</td></tr></tbody></table><h3 id="三种同步策略的优缺点如下："><a href="#三种同步策略的优缺点如下：" class="headerlink" title="三种同步策略的优缺点如下："></a>三种同步策略的优缺点如下：</h3><ul><li>Always：可靠性较高，数据基本不丢失，但是对性能影响较大</li><li>Everysec：性能适中，及时宕机也只会丢失一秒的数据</li><li>No：性能好，但发生当即情况时，</li></ul><h3 id="AOF重写"><a href="#AOF重写" class="headerlink" title="AOF重写"></a>AOF重写</h3><p>我们上面说过，AOF 属于日志追加的形式来存储 Redis 的写指令，虽然有一定的写回策略，但毕竟 AOF 是通过文件的形式记录所有的写命令，但如果指令越来越多的时候，AOF 文件就会越来越大，可能会超出文件大小的限制。如果发生宕机，需要把 AOF 所有的命令重新执行，以用于故障恢复，数据过大的话这个恢复过程越漫长，也会影响 Redis 的使用。因此 Redis 提供 <strong>重写机制</strong>来解决这个问题。</p><p>AOF 重写的过程是通过主线程 fork 后台的 bgrewriteaof 子进程来实现的，可以避免阻塞主进导致性能下降，整个过程如下：</p><ul><li><p>AOF 每次重写，fork 过程会把主线程的内存拷贝一份 bgrewriteaof 子进程，里面包含了数据库的数据，拷贝的是父进程的页表，可以在不影响主进程的情况下逐一把拷贝的数据记入重写日志；</p></li><li><p>因为主线程没有阻塞，仍然可以处理新来的操作，如果这时候存在写操作，会先把操作先放入缓冲区，对于正在使用的日志，如果宕机了这个日志也是齐全的，可以用于恢复；对于正在更新的日志，也不会丢失新的操作，等到数据拷贝完成，就可以将缓冲区的数据写入到新的文件中，保证数据库的最新状态。</p></li></ul><h3 id="RDB快照"><a href="#RDB快照" class="headerlink" title="RDB快照"></a>RDB快照</h3><p>RDB是一种快照存储持久化方式，具体就是将Redis某一时刻的内存数据保存到硬盘的文件当中，默认保存的文件名为dump.rdb，而在Redis服务器启动时，会重新加载dump.rdb文件的数据到内存当中恢复数据。</p><p>为了 RDB 数据恢复的可靠性，在进行快照的时候是全量快照，会将内存中所有的数据都记录到磁盘中，这就有可能会阻塞主线程的执行。Redis 提供了两个命令来生成 RDB 文件，分别是 <strong>save</strong> 和 <strong>bgsave</strong> ：</p><ul><li><strong>save</strong>：执行 save 指令，阻塞 Redis 的其他操作，会导致 Redis 无法响应客户端请求，不建议使用。</li><li><strong>bgsave</strong>：执行 bgsave 指令，Redis 后台创建子进程，异步进行快照的保存操作，此时 Redis 仍然能响应客户端的请求。</li></ul><h3 id="自动间隔保存"><a href="#自动间隔保存" class="headerlink" title="自动间隔保存"></a>自动间隔保存</h3><p>Redis 可以设置间隔性保存，让它在“ N 秒内数据集至少有 M 个改动”这一条件被满足时，自动保存一次数据集。比如说， 以下设置会让 Redis 在满足“ 60 秒内有至少有 10 个键被改动”这一条件时，自动保存一次数据集：save 60 10</p><p>Redis 的默认配置如下，三个设置满足其一就会触发自动保存：</p><blockquote><p>save  60  10000</p><p>save  900  10</p><p>save  300  1</p></blockquote><h3 id="RDB模式优点"><a href="#RDB模式优点" class="headerlink" title="RDB模式优点"></a>RDB模式优点</h3><ul><li>相比AOF在恢复数据的时候需要一条条的执行操作命令，通过RDB文件恢复数据的效率更高；</li><li>同样规模的内存数据，RDB文件数据更加紧凑，磁盘空间占用更小；</li><li>适合全量备份内存数据场景；</li><li>可以根据不同的时间间隔保存RDB文件，在恢复数据的时候可以更加灵活地选择对应版本数据进行恢复</li></ul><h3 id="RDB模式缺点"><a href="#RDB模式缺点" class="headerlink" title="RDB模式缺点"></a>RDB模式缺点</h3><ul><li>由于RDB数据保存存在一定的时间间隔，因此存在丢失缓存数据的风险；</li><li>fork子进程进行RDB文件生成，由于是一次性生成一个内存快照文件，对于服务器磁盘IO以及Redis本身来说都属于重操作，可能会对服务器的磁盘IO造成压力。</li></ul><h3 id="混合使用AOF日志和RDB快照"><a href="#混合使用AOF日志和RDB快照" class="headerlink" title="混合使用AOF日志和RDB快照"></a>混合使用AOF日志和RDB快照</h3><p>Redis4.0 后大部分的使用场景都不会单独使用 RDB 或者 AOF 来做持久化机制，而是兼顾二者的优势混合使用。其原因是 RDB 虽然快，但是会丢失比较多的数据，不能保证数据完整性；AOF 虽然能尽可能保证数据完整性，但是性能确实是一个诟病，比如重放恢复数据。  </p><p>Redis从4.0版本开始引入 RDB-AOF 混合持久化模式，这种模式是基于 AOF 持久化模式构建而来的，混合持久化通过 <strong>aof-use-rdb-preamble yes</strong> 开启。这样的好处是 RDB 快照不需要很频繁的执行，可以避免频繁 fork 对主线程的影响，而且 AOF 日志也只记录两次快照期间的操作，不用记录所有操作，也不会出现文件过大的情况，避免了重写开销。</p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本文主要分析了Redis AOF、RDB快照 以及混合持久化的内存数据持久化的机制原理，生产环境中推荐使用混合持久化，这种方式综合了RDB和AOF两种方式的优点。</p>]]></content>
     
@@ -81,19 +81,19 @@
     
     
     
-    <category term="redis" scheme="http://example.com/categories/redis/"/>
+    <category term="中间件" scheme="http://example.com/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
     
     
-    <category term="redis的持久化" scheme="http://example.com/tags/redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96/"/>
+    <category term="redis" scheme="http://example.com/tags/redis/"/>
     
   </entry>
   
   <entry>
     <title>第一篇博客</title>
-    <link href="http://example.com/2023/09/10/%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/"/>
-    <id>http://example.com/2023/09/10/%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/</id>
+    <link href="http://example.com/posts/ff05b5bf.html"/>
+    <id>http://example.com/posts/ff05b5bf.html</id>
     <published>2023-09-10T01:30:07.000Z</published>
-    <updated>2023-09-10T14:05:23.798Z</updated>
+    <updated>2023-09-23T07:24:15.918Z</updated>
     
     <content type="html"><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><p>代码测试： </p><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Hello&quot;</span>)</span><br></pre></td></tr></table></figure><p> 图片测试： </p><p><img src="http://mculover666.cn/blog/20191031/R4mWMXsrRKxu.png?imageslim"> 引用测试：</p><blockquote><p>这是一条引用 </p><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><p>无序列表测试：</p><ul><li><p>哈哈 </p></li><li><p>嘿嘿 </p></li><li><p>吼吼 </p><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><h4 id="四级标题"><a href="#四级标题" class="headerlink" title="四级标题"></a>四级标题</h4></li></ul></blockquote>]]></content>
     
@@ -111,10 +111,10 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://example.com/2023/09/05/hello-world/"/>
-    <id>http://example.com/2023/09/05/hello-world/</id>
+    <link href="http://example.com/posts/4a17b156.html"/>
+    <id>http://example.com/posts/4a17b156.html</id>
     <published>2023-09-05T08:19:42.618Z</published>
-    <updated>2023-09-05T08:18:19.249Z</updated>
+    <updated>2023-09-23T07:24:15.906Z</updated>
     
     <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
     
