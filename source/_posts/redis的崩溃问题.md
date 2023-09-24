@@ -1,10 +1,11 @@
 ---
 title: redis的崩溃问题
+categories:
+  - 中间件
+tags:
+  - redis
+abbrlink: 711efdca
 date: 2023-09-15 08:58:11
-categories: 
-- redis
-tags: 
-- redis的崩溃问题
 ---
 
 # Redis的崩溃问题

@@ -1,10 +1,11 @@
 ---
 title: Redis的持久化机制
+categories:
+  - 中间件
+tags:
+  - redis
+abbrlink: e5adb42e
 date: 2023-09-12 09:15:51
-categories: 
-- redis
-tags: 
-- redis的持久化 
 ---
 
 # Redis的持久化机制

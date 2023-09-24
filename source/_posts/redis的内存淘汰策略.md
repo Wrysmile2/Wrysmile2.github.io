@@ -1,10 +1,11 @@
 ---
 title: redis的内存淘汰策略
+categories:
+  - 中间件
+tags:
+  - redis
+abbrlink: 153f114c
 date: 2023-09-14 12:58:45
-categories: 
-- redis
-tags: 
-- 内存淘汰策略 
 ---
 
 # Redis的内存淘汰策略

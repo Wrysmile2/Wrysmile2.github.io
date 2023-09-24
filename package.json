@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "hexo": "^6.3.0",
+    "hexo-abbrlink": "^2.2.1",
     "hexo-admin": "^2.3.0",
     "hexo-browsersync": "^0.3.0",
     "hexo-deployer-git": "^4.0.0",
@@ -20,8 +21,10 @@
     "hexo-generator-category": "^2.0.0",
     "hexo-generator-feed": "^3.0.0",
     "hexo-generator-index": "^3.0.0",
+    "hexo-generator-search": "^2.4.3",
     "hexo-generator-sitemap": "^3.0.1",
     "hexo-generator-tag": "^2.0.0",
+    "hexo-helper-live2d": "^3.1.1",
     "hexo-renderer-ejs": "^2.0.0",
     "hexo-renderer-jade": "^0.5.0",
     "hexo-renderer-less": "^4.0.0",
@@ -29,7 +32,12 @@
     "hexo-renderer-pug": "^3.0.0",
     "hexo-renderer-stylus": "^2.1.0",
     "hexo-server": "^3.0.0",
+    "hexo-tag-aplayer": "^3.0.4",
     "hexo-theme-async": "^2.0.9",
-    "hexo-theme-landscape": "^1.0.0"
+    "hexo-theme-landscape": "^1.0.0",
+    "live2d-widget-model-koharu": "^1.0.5"
+  },
+  "devDependencies": {
+    "hexo-generator-baidu-sitemap": "^0.1.9"
   }
 }
