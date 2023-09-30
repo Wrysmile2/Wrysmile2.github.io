@@ -6,7 +6,7 @@
   <link href="https://wrysmile2.github.io/atom.xml" rel="self"/>
   
   <link href="https://wrysmile2.github.io/"/>
-  <updated>2023-09-30T00:56:39.232Z</updated>
+  <updated>2023-09-30T05:41:02.361Z</updated>
   <id>https://wrysmile2.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Mysql事务的隔离级别</title>
+    <link href="https://wrysmile2.github.io/posts/f3c852d2.html"/>
+    <id>https://wrysmile2.github.io/posts/f3c852d2.html</id>
+    <published>2023-09-30T04:49:29.000Z</published>
+    <updated>2023-09-30T05:41:02.361Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Mysql事务的隔离级别"><a href="#Mysql事务的隔离级别" class="headerlink" title="Mysql事务的隔离级别"></a>Mysql事务的隔离级别</h1><h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>我们之前介绍过Mysql的存储引擎，其中只有InnoDB支持事务，然而提到事务就一定会考虑到隔离级别，今天我们来整理一下Mysql事务的四大隔离级别相关知识，希望对大家有所帮助。</p><h3 id="Mysql事务"><a href="#Mysql事务" class="headerlink" title="Mysql事务"></a>Mysql事务</h3><p>数据库事务指的是一组数据操作，事务内的操作要么就全部成功，要么就全部失败，什么都不做，其实不是没做，是可能只做了一部分，但只要有一步失败，就要回滚所有操作。</p><p>在事务的使用中，我们会遇到一些相关问题，一般会有三种情况：<strong>脏读</strong>、<strong>不可重复读</strong>、<strong>幻读</strong>，这是事务并发可能会出现的情况。</p><h4 id="脏读（Dirty-Read）"><a href="#脏读（Dirty-Read）" class="headerlink" title="脏读（Dirty Read）"></a>脏读（Dirty Read）</h4><blockquote><p>脏读指的是：一个事务读到了另一个未提交事务修改过的数据，未提交意味着这些数据可能会回滚，也可能最终没有保存到数据库中，所以就导致了读到的数据不一定是真实的数据。这就是脏读。</p></blockquote><h4 id="不可重复读"><a href="#不可重复读" class="headerlink" title="不可重复读"></a>不可重复读</h4><blockquote><p>可重复读指的是在同一个事务内，不同的时刻读到的同一批数据可能是不一样的，可能会受到其他事务的影响，比如当一个事务在大量读取数据时，有一其他事务对该数据进行了修改，这就会导致之后读取到的数据会与修改前不一致。这就是不可重复读，通常针对数据更新（update）操作。</p></blockquote><h4 id="幻读"><a href="#幻读" class="headerlink" title="幻读"></a>幻读</h4><blockquote><p>幻读是针对数据<strong>插入（insert）</strong>操作来说的。假设事务A对某些数据做了修改，但是还没有提交事务，此时事务B插入了与事务A更改前的记录相同的数据，并且在事务A提交之前提交了，而这时，在事务A中查询，会发现好像刚刚的更改对某些数据不起作用，但这其实是事务B插入进来的，对于用户来说，就想中了幻术一样，这就是幻读。</p></blockquote><p>这三种是事务的实现中会发生的三种异常，使用Mysql定义的隔离级别可以避免它，我们之前讲过，Mysql的事务实现逻辑是位于引擎层的，但不是所有存储引擎都支持事务，下面我们所讲述的隔离级别都是以InnoDB存储引擎来描述。</p><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>隔离性（isolation）指的是不同事务先后提交并执行后，最终呈现出来的效果是串行的，也就是说，对于事务来说，它在执行过程中，感知到的数据变化应该只有自己操作引起的，不存在其他事务引发的数据变化。</p><p><strong>隔离性解决的是并发事务出现的问题</strong>。</p><h3 id="SQL的隔离级别"><a href="#SQL的隔离级别" class="headerlink" title="SQL的隔离级别"></a>SQL的隔离级别</h3><p>隔离性最简单的实现方式就是各个事务都串行执行了，如果前面的事务还没有执行完毕，后面的事务就都等待。但是这样的实现方式很明显并发效率不高，并不适合在实际环境中使用。</p><p>为了解决上述问题，实现不同程度的并发控制，SQL的标准制定者提出了不同的隔离级别：未提交读（read uncommitted）、提交读（read committed）、可重复读（repeatable read）、序列化读（serializable）。其中最高级隔离级别就是序列化读，而在其他隔离级别中，由于事务是并发执行的，所以或多或少允许出现一些问题。见以下的矩阵表：</p><table><thead><tr><th align="left">隔离级别（+:允许出现，-：不允许出现）</th><th align="center">脏读</th><th align="center">不可重复读</th><th align="center">幻读</th></tr></thead><tbody><tr><td align="left">读未提交（RU）</td><td align="center">+</td><td align="center">+</td><td align="center">+</td></tr><tr><td align="left">读已提交</td><td align="center">-</td><td align="center">+</td><td align="center">+</td></tr><tr><td align="left">可重复度</td><td align="center">-</td><td align="center">-</td><td align="center">+</td></tr><tr><td align="left">序列化</td><td align="center">-</td><td align="center">-</td><td align="center">-</td></tr></tbody></table><p><strong>注意，MySQL的InnoDB引擎在提交读级别通过MVCC解决了不可重复读的问题，在可重复读级别通过间隙锁解决了幻读问题，具体见下面的分析</strong>。</p><h4 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h4><p><strong>标准SQL事务隔离级别实现原理</strong></p><p>我们上面遇到的问题其实就是并发事务下的控制问题，解决并发事务的最常见方式就是悲观并发控制了（也就是数据库中的锁）。标准SQL事务隔离级别的实现是依赖锁的，我们来看下具体是怎么实现的：</p><table><thead><tr><th>事务隔离级别</th><th>实现方式</th></tr></thead><tbody><tr><td>读未提交（RU）</td><td>事务对当前被读取的数据不加锁； 事务在更新某数据的瞬间（就是发生更新的瞬间），必须先对其加<strong>行级共享锁</strong>，直到事务结束才释放。</td></tr><tr><td>读已提交（RC）</td><td>事务对当前被读取的数据加<strong>行级共享锁（当读到时才加锁）</strong>，一旦读完该行，立即释放该行级共享锁； 事务在更新某数据的瞬间（就是发生更新的瞬间），必须先对其加<strong>行级排他锁</strong>，直到事务结束才释放。</td></tr><tr><td>可重复读（RR）</td><td>事务在读取某数据的瞬间（就是开始读取的瞬间），必须先对其加<strong>行级共享锁</strong>，直到事务结束才释放； 事务在更新某数据的瞬间（就是发生更新的瞬间），必须先对其加<strong>行级排他锁</strong>，直到事务结束才释放。</td></tr><tr><td>序列化（S）</td><td>事务在读取数据时，必须先对其加<strong>表级共享锁</strong> ，直到事务结束才释放； 事务在更新数据时，必须先对其加<strong>表级排他锁</strong> ，直到事务结束才释放。</td></tr></tbody></table><p>可以看到，在只使用锁来实现隔离级别的控制的时候，需要频繁的加锁解锁，而且很容易发生读写的冲突（例如在RC级别下，事务A更新了数据行1，事务B则在事务A提交前读取数据行1都要等待事务A提交并释放锁）。</p><h3 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h3><p>以上就是我对Mysql的隔离级别的一些看法和总结，欢迎小伙伴在评论区补充。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;Mysql事务的隔离级别&quot;&gt;&lt;a href=&quot;#Mysql事务的隔离级别&quot; class=&quot;headerlink&quot; title=&quot;Mysql事务的隔离级别&quot;&gt;&lt;/a&gt;Mysql事务的隔离级别&lt;/h1&gt;&lt;h3 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;</summary>
+      
+    
+    
+    
+    <category term="中间件" scheme="https://wrysmile2.github.io/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
+    
+    
+    <category term="Mysql" scheme="https://wrysmile2.github.io/tags/Mysql/"/>
+    
+  </entry>
   
   <entry>
     <title>Mysql的执行流程</title>
