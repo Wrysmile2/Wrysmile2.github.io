@@ -20,7 +20,7 @@ menu:
     音乐: /music/ || fa fa-music
     影视: /movies/ || fas fa-video
   友链: /links/ || fa fa-link
-  留言板: /comment/ || fa fa-paper-plane
+  留言板: /guestbook/ || fa fa-book
   #留言板: /messageboard/ || fa fa-paper-plane
   关于笔者: /about/ || fas fa-heart  
 
@@ -420,7 +420,7 @@ addtoany:
 comments:
   # Up to two comments system, the first will be shown as default
   # Choose: Disqus/Disqusjs/Livere/Gitalk/Valine/Waline/Utterances/Facebook Comments/Twikoo/Giscus/Remark42/Artalk
-  use: # Valine,Disqus
+  use:  Valine #Disqus
   text: true # Display the comment name next to the button
   # lazyload: The comment system will be load when comment element enters the browser's viewport.
   # If you set it to true, the comment count will be invalid
@@ -460,13 +460,21 @@ gitalk:
 # valine
 # https://valine.js.org
 valine:
-  appId: # leancloud application app id
-  appKey: # leancloud application app key
+  enable: true
+  appId: r9KHMlmAIJdXjTSvyTfw3opc-gzGzoHsz # leancloud application app id
+  appKey: fPBDQsE7PoI8gQy6OCj0bYko # leancloud application app key
+  noticy: true
+  verify: false
+  placeholder: "输入你的评论\n昵称为必填项目\n虽然email不是必选，但是填写了email可以收到推送通知哦！"
   avatar: monsterid # gravatar style https://valine.js.org/#/avatar
+  guest_info: nick,mail,link
+  pageSize: 3
+  language: zh-cn
+  comment_count: true
   serverURLs: # This configuration is suitable for domestic custom domain name users, overseas version will be automatically detected (no need to manually fill in)
   bg: # valine background
-  visitor: false
-  option:
+  visitor: true
+  recordIP: true
 
 # waline - A simple comment system with backend support fork from Valine
 # https://waline.js.org/
