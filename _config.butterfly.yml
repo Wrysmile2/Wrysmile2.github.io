@@ -651,7 +651,6 @@ index_top_img_height:
 # default - same as archives UI 默認跟archives頁面UI一樣
 category_ui: # 留空或 index
 tag_ui: # 留空或 index
-
 # Website Background (設置網站背景)
 # can set it to color or image (可設置圖片 或者 顔色)
 # The formal of image: url(http://xxxxxx.com/xxx.jpg)
