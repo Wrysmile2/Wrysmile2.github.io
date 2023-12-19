@@ -1,10 +1,11 @@
 ---
 title: 搭建k8s集群
-categories: 
- - 云计算
+categories:
+  - 云计算
 tags:
- - Kubernetes
-date: 2023-12-19 18:30:56 
+  - Kubernetes
+abbrlink: 704023d9
+date: 2023-12-19 18:30:56
 ---
 
 # 搭建Kubernetes集群（一）
