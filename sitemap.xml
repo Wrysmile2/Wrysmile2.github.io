@@ -13,7 +13,7 @@
   <url>
     <loc>https://wrysmile2.github.io/posts/368c6375.html</loc>
     
-    <lastmod>2023-10-16</lastmod>
+    <lastmod>2023-10-19</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -176,14 +176,14 @@
   </url>
   
   <url>
-    <loc>https://wrysmile2.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</loc>
+    <loc>https://wrysmile2.github.io/tags/Kubernetes/</loc>
     <lastmod>2023-12-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://wrysmile2.github.io/tags/Kubernetes/</loc>
+    <loc>https://wrysmile2.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</loc>
     <lastmod>2023-12-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -199,14 +199,14 @@
   </url>
   
   <url>
-    <loc>https://wrysmile2.github.io/categories/%E5%90%8E%E7%AB%AF/</loc>
+    <loc>https://wrysmile2.github.io/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/</loc>
     <lastmod>2023-12-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://wrysmile2.github.io/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/</loc>
+    <loc>https://wrysmile2.github.io/categories/%E5%90%8E%E7%AB%AF/</loc>
     <lastmod>2023-12-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
