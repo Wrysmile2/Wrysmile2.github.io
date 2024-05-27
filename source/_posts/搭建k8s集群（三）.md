@@ -232,7 +232,7 @@ spec:
       labels:
         k8s-app: kubernetes-dashboard
     spec:
-    nodeName:k8s-master
+      nodeName: k8s-master
       containers:
         - name: kubernetes-dashboard
           image: kubernetesui/dashboard:v2.3.1
@@ -317,7 +317,7 @@ spec:
       annotations:
         seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
     spec:
-    nodeName:k8s-master
+      nodeName: k8s-master
       containers:
         - name: dashboard-metrics-scraper
           image: kubernetesui/metrics-scraper:v1.0.6
@@ -410,9 +410,9 @@ kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get
 ```
 
 ```json
-eyJhbGciOiJSUzI1NiIsImtpZCI6InpXSkU0TjhCUmVKQzBJaC03Nk9ES2NMZ1daRTRmQ1FMZU9rRUJ3VXRnM3MifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuLXgyczhmIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIzOTZmYjdlNS0wMjA2LTQxMjctOGQzYS0xMzRlODVmYjU0MDAiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.Hf5mhl35_R0iBfBW7fF198h_klEnN6pRKfk_roAzOtAN-Aq21E4804PUhe9Rr9e_uFzLfoFDXacjJrHCuhiML8lpHIfJLK_vSD2pZNaYc2NWZq2Mso-BMGpObxGA23hW0nLQ5gCxlnxIAcyE76aYTAB6U8PxpvtVdgUknBVrwXG8UC_D8kHm9PTwa9jgbZfSYAfhOHWmZxNYo7CF2sHH-AT_WmIE8xLmB7J11vDzaunv92xoUoI0ju7OBA2WRr61bOmSd8WJgLCDcyBblxz4Wa-3zghfKlp0Rgb8l56AAI7ML_snF59X6JqaCuAcCJjIu0FUTS5DuyIObEeXY-z-Rw
+eyJhbGciOiJSUzI1NiIsImtpZCI6Ii1vMnU5QmoxODIySDVlM2dKdmNjUXdTNm15NDVNWjNqdHl5dWRpeHRBOVEifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuLWw2MmgyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIyMDI1Yzc3My1jOTVkLTRkOTMtYmZiOS02MGFjNTVjOGFhMzUiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.F-FCWhZ4T03mUmFCkGID-0uwmyBNkffVtUODOHSJDElclOgdd6qvtkwvLwqQQvyVEhGSDE0C2leOmYJBKM31NGDGUg4Ozfazp4lnJvet2ZpmnbqSo_GojiDbaKHniE-5ZcGfd22GTSS6h6UCSm8FIFwbh8-eWn0_NjR7ySRCZdMvIuzME69MFoxqP_0-MsLPr5uqUl0XYhR1AtYwpfziWlszpa0OuH7OxZ9wtVdEQIYbOfQbPgIvzAZzIOiAzy86Z9Jt0nhP7ApSwBvZTQ8XanLLOt3L3JK6dKm-YBlVCQVsYO1j8uX4OTBJXADopEzaDFvtYtGyy__IFWLUJCgTjw
 ```
 
 #### 5、界面
 
-![dashboard界面](搭建k8s集群（三）/image.png)
+![dashboard界面](搭建k8s集群（三）/1.jpg)
