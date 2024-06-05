@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wrysmile2.github.io/posts/3ecc9cc9.html</loc>
+    
+    <lastmod>2024-06-05</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wrysmile2.github.io/posts/5b7370d5.html</loc>
+    
+    <lastmod>2024-06-05</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wrysmile2.github.io/posts/a4c85e0f.html</loc>
     
     <lastmod>2024-05-27</lastmod>
@@ -184,7 +202,7 @@
 
   <url>
     <loc>https://wrysmile2.github.io/</loc>
-    <lastmod>2024-05-27</lastmod>
+    <lastmod>2024-06-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -192,42 +210,49 @@
   
   <url>
     <loc>https://wrysmile2.github.io/tags/%E6%8E%A5%E5%8F%A3/</loc>
-    <lastmod>2024-05-27</lastmod>
+    <lastmod>2024-06-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://wrysmile2.github.io/tags/Kubernetes/</loc>
-    <lastmod>2024-05-27</lastmod>
+    <lastmod>2024-06-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://wrysmile2.github.io/tags/Mysql/</loc>
-    <lastmod>2024-05-27</lastmod>
+    <lastmod>2024-06-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://wrysmile2.github.io/tags/redis/</loc>
-    <lastmod>2024-05-27</lastmod>
+    <lastmod>2024-06-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://wrysmile2.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</loc>
-    <lastmod>2024-05-27</lastmod>
+    <lastmod>2024-06-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://wrysmile2.github.io/tags/LNMP/</loc>
-    <lastmod>2024-05-27</lastmod>
+    <lastmod>2024-06-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://wrysmile2.github.io/tags/LAMP/</loc>
+    <lastmod>2024-06-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -236,21 +261,21 @@
   
   <url>
     <loc>https://wrysmile2.github.io/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/</loc>
-    <lastmod>2024-05-27</lastmod>
+    <lastmod>2024-06-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://wrysmile2.github.io/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/</loc>
-    <lastmod>2024-05-27</lastmod>
+    <lastmod>2024-06-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://wrysmile2.github.io/categories/%E5%90%8E%E7%AB%AF/</loc>
-    <lastmod>2024-05-27</lastmod>
+    <lastmod>2024-06-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
