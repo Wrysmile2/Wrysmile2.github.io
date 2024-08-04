@@ -1,5 +1,5 @@
 ---
-title: LAMP服务的搭
+title: LAMP服务的搭建
 categories:
   - 云计算
 tags:
